@@ -30,9 +30,18 @@ SolidCompression=yes
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Dirs]
+Name: "{app}\jre"
+
 [Files]
+Source: "UNZIP.EXE"; DestDir: "{app}"; Flags: deleteafterinstall
 Source: "Datamover\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "AnnotationTool\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[Run]
+Filename: "{app}\unzip.exe"; Parameters: "jre\jre1.7.0_67_64bit.zip -d {app}\jre"
+Filename: "{app}\unzip.exe"; Parameters: "Datamover\datamover-13.07.0-r29510.zip -d {app}\Datamover"
+
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
