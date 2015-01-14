@@ -9,3 +9,8 @@ function Expand-ZIPFile($file, $destination)
     }
 }
 
+# Install Datamover JSL as a Windows Service
+function Install-DatamoverJSL()
+{
+    Write-Host "TO DO!"
+}
