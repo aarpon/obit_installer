@@ -197,7 +197,8 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
 {
     # Write key
     $privateKeyFileName = $sshFolder + "\key"
-        
+    $privateKeyFileName = $privateKeyFileName -replace "\\", '/'
+
     # Open stream
     $stream = [System.IO.StreamWriter] $privateKeyFileName
 
