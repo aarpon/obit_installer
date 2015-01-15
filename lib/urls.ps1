@@ -9,9 +9,6 @@ $BIN_DIR = $PSScriptRoot + "\..\bin"
 $TAR_EXE = $BIN_DIR + "\tar.exe"
 $WGET_EXE = $BIN_DIR + "\wget.exe"
 
-# Temp directory
-$TEMP_DIR = $env:temp
-
 # DATAMOVER_JSL
 $DATAMOVER_JSL_VERSION = "0.1.0"
 $DATAMOVER_JSL_FILENAME = $DATAMOVER_JSL_VERSION + ".zip"

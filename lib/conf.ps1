@@ -197,13 +197,12 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
 {
     # Write key
     $privateKeyFileName = $sshFolder + "\key"
-    $privateKeyFileName = $privateKeyFileName -replace "\\", '/'
-
+    
     # Open stream
     $stream = [System.IO.StreamWriter] $privateKeyFileName
 
     # Write the key
-    $stream.WriteLine("[PLEASE PASTE THE PRIVATE KEY FOR USER $remoteUser HERE!]");
+    $stream.WriteLine("[PLEASE PASTE THE PRIVATE KEY FOR USER $remoteUser HERE!]")
 
     # Close stream
     $stream.close()
@@ -214,11 +213,14 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
     # Open stream
     $stream = [System.IO.StreamWriter] $configFileName
 
+    # Path to the key to save in the config file
+    $privateKeyFileNamePosix = "/home/$remoteUser/.ssh/key"
+
     # Write the server configuration
     $stream.WriteLine("Host $remoteHost");
     $stream.WriteLine("    HostName $remoteHost");
     $stream.WriteLine("    User $remoteUser");
-    $stream.WriteLine("    IdentityFile $privateKeyFileName");
+    $stream.WriteLine("    IdentityFile $privateKeyFileNamePosix");
 
     # Close stream
     $stream.close()
