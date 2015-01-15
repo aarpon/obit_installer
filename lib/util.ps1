@@ -9,6 +9,15 @@ function Expand-ZIPFile($file, $destination)
     }
 }
 
+# Create a shortcut to an executable
+function Save-Shortcut($sourceExe, $destinationPath)
+{
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($destinationPath)
+    $Shortcut.TargetPath = $sourceExe
+    $Shortcut.Save()
+}
+
 # Uninstall Datamover JSL as a Windows Service
 function Remove-DatamoverJSL($datamoverJSLPath, $platformNBits)
 {
