@@ -65,6 +65,9 @@ foreach ($comp in $ComputerName){
 
         }
 
+       $group=[ADSI]"WinNT://$comp/Users,Group"
+       $group.Add($user.path)
+
 }
 
 # Set-Owner: from https://gallery.technet.microsoft.com/scriptcenter/Set-Owner-ff4db177
