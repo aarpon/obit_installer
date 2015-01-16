@@ -4,10 +4,9 @@
 #
 # ===========================================================================================
 
-# Bin directory and tools
-$BIN_DIR = $PSScriptRoot + "\..\bin"
-$TAR_EXE = $BIN_DIR + "\tar.exe"
-$WGET_EXE = $BIN_DIR + "\wget.exe"
+# Tools
+$TAR_EXE = "tar.exe"
+$WGET_EXE = "wget.exe"
 
 # Temp directory
 $TEMP_DIR = $env:temp
