@@ -34,7 +34,7 @@ function Add-LocalUserAccount($userName, $password)
     $user.put("userflags", $flag)
 
     # Description
-    $user.Description = "oBIT - Datamover as a Windows service user"
+    $user.Description = "Datamover as a Windows service user"
 
     # Store user info
     $user.SetInfo()
