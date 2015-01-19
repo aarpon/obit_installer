@@ -1,73 +1,47 @@
-# Extracted from: https://berkenbile.wordpress.com/2013/04/26/manage-local-user-accounts-with-powershell/
-
 # Get local user account
-Function Get-LocalUserAccount{
-[CmdletBinding()]
-param (
- [parameter(ValueFromPipeline=$true,
-   ValueFromPipelineByPropertyName=$true)]
- [string[]]$ComputerName=$env:computername,
- [string]$UserName
-)
-foreach ($comp in $ComputerName){
+function Get-LocalUserAccount($userName)
+{
 
-    [ADSI]$server="WinNT://$comp"
+    # Get the server
+    [ADSI]$server="WinNT://$env:COMPUTERNAME"
 
-    if ($UserName){
+    # Query the user
+    $user = $server.children | where {$_.schemaclassname -eq "user" -and $_.name -eq $userName}
 
-            foreach ($User in $UserName){
-            $server.children |
-            where {$_.schemaclassname -eq "user" -and $_.name -eq $user}
-            }    
-    }else{
+    # Return the user (or $null if not found)
+    return $user
 
-            $server.children |
-            where {$_.schemaclassname -eq "user"}
-        }
-    }
 }
 
 # Create local user account
-Function Add-LocalUserAccount{
-[CmdletBinding()]
-param (
- [parameter(ValueFromPipeline=$true,
-   ValueFromPipelineByPropertyName=$true)]
- [string[]]$ComputerName=$env:computername,
+function Add-LocalUserAccount($userName, $password)
+{
 
- [parameter(Mandatory=$true)]
- [string]$UserName,
- [parameter(Mandatory=$true)]
- [string]$Password,
- [switch]$PasswordNeverExpires,
- [string]$Description
-)
+    # Get the server
+    [ADSI]$server="WinNT://$env:COMPUTERNAME"
 
-foreach ($comp in $ComputerName){
+    # Create the user
+    $user = $server.Create("User", $userName)
 
-       [ADSI]$server="WinNT://$comp"
-       $user=$server.Create("User",$UserName)
-       $user.SetPassword($Password)
+    # Set user password
+    $user.SetPassword($password)
 
-       if ($Description){
+    # Store user info
+    $user.SetInfo()
 
-       $user.Put("Description",$Description)
-       }
+    # Password never expires
+    $flag = $user.UserFlags.value -bor 0x10000
+    $user.put("userflags", $flag)
 
-       if ($PasswordNeverExpires){
+    # Description
+    $user.Description = "oBIT - Datamover as a Windows service user"
 
-            $flag=$User.UserFlags.value -bor 0x10000
-            $user.put("userflags",$flag)
+    # Store user info
+    $user.SetInfo()
 
-            }
-
-        $user.SetInfo()
-
-        }
-
-       $group=[ADSI]"WinNT://$comp/Users,Group"
-       $group.Add($user.path)
-
+    # Add to the Users group
+    [ADSI]$group="WinNT://$env:COMPUTERNAME/Users,Group"
+    $group.Add($user.path)
 }
 
 # Set-Owner: from https://gallery.technet.microsoft.com/scriptcenter/Set-Owner-ff4db177
