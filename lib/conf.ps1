@@ -57,15 +57,14 @@ function Configure-AnnotationTool($annotationToolPath, $jrePath, $platformNBits)
 
 # Write the Datamover configuration file
 function Configure-Datamover($datamoverPath, $datamoverDataIncomingPath, $datamoverDataBufferPath, `
-    $datamoverDataManualPath, $remoteUser, $remoteHost, $remotePort, $remotePath, `
-    $remoteLastChangedPath, $jrePath, $platformNBits)
+    $datamoverDataManualPath, $dssUser, $dssHost, $dssDropboxPath, $dssLastChangedPath, $jrePath, $platformNBits)
 {
     # Make sure to use forward slashes
     $datamoverDataIncomingPath = $datamoverDataIncomingPath -replace "\\", '/'
     $datamoverDataBufferPath   = $datamoverDataBufferPath -replace "\\", '/'
     $datamoverDataManualPath   = $datamoverDataManualPath -replace "\\", '/'
-    $remotePath                = $remotePath -replace "\\", '/'
-    $remoteLastChangedPath     = $remoteLastChangedPath -replace "\\", '/'
+    $dssDropboxPath            = $dssDropboxPath -replace "\\", '/'
+    $dssLastChangedPath        = $dssLastChangedPath -replace "\\", '/'
 
     # File name
     $fileName = $datamoverPath + "\etc\service.properties"
@@ -78,16 +77,16 @@ function Configure-Datamover($datamoverPath, $datamoverDataIncomingPath, $datamo
     $stream.WriteLine("skip-accessibility-test-on-incoming = false")
     $stream.WriteLine("buffer-dir = $datamoverDataBufferPath")
     $stream.WriteLine("buffer-dir-highwater-mark = 1048576")
-    $stream.WriteLine("outgoing-target = $remoteUser" + "@" + $remoteHost + ":" + $remotePort + $remotePath)
+    $stream.WriteLine("outgoing-target = $dssUser" + "@" + $dssHost + ":" + $dssDropboxPath)
     $stream.WriteLine("outgoing-target-highwater-mark = 1048576")
     $stream.WriteLine("skip-accessibility-test-on-outgoing = true")
     $stream.WriteLine("data-completed-script = scripts/data_completed_script.bat")
     $stream.WriteLine("manual-intervention-dir = $datamoverDataManualPath")
     $stream.WriteLine("quiet-period = 60")
     $stream.WriteLine("check-interval = 60")
-    if (! $remoteLastChangedPath -eq "")
+    if (! $dssLastChangedPath -eq "")
     {
-        $stream.WriteLine("outgoing-host-lastchanged-executable = $remoteLastChangedPath")
+        $stream.WriteLine("outgoing-host-lastchanged-executable = $dssLastChangedPath")
     }
 
     # Close stream
@@ -145,7 +144,7 @@ function Configure-Datamover_JSL($datamoverJSLPath, $localUser, $jrePath, $platf
 }
 
 # Create the Annotation Tool settings for the acquisition machine
-function Create-AnnotationTool-Settings($userFolder, $remoteHost, $remotePort, $datamoverDataIncomingPath, `
+function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort, $datamoverDataIncomingPath, `
     $annotationToolAdminAcqType, $acceptSelfSignedCertificates)
 {
     # Settings file path
@@ -159,13 +158,13 @@ function Create-AnnotationTool-Settings($userFolder, $remoteHost, $remotePort, $
     }
 
     # Build complete openBIS URL
-    if ($remotePort -eq "")
+    if ($openBISPort -eq "")
     {
-        $openBISURL = "https://$remoteHost/openbis"
+        $openBISURL = "https://$openBISHost/openbis"
     }
     else
     {
-        $openBISURL = "https://$remoteHost" + ":" + "$remotePort/openbis"
+        $openBISURL = "https://$openBISHost" + ":" + "$openBISPort/openbis"
     }
     
     # Create XML document
@@ -193,7 +192,7 @@ function Create-AnnotationTool-Settings($userFolder, $remoteHost, $remotePort, $
 }
 
 # Create the Annotation Tool settings for the acquisition machine
-function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
+function Write-SSH-Information($sshFolder, $dssHost, $dssUser)
 {
     # Write key
     $privateKeyFileName = $sshFolder + "\key"
@@ -202,7 +201,7 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
     $stream = [System.IO.StreamWriter] $privateKeyFileName
 
     # Write the key
-    $stream.WriteLine("[PLEASE PASTE THE PRIVATE KEY FOR USER $remoteUser HERE!]")
+    $stream.WriteLine("[PLEASE PASTE THE PRIVATE KEY FOR USER $dssUser HERE!]")
 
     # Close stream
     $stream.close()
@@ -214,12 +213,12 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
     $stream = [System.IO.StreamWriter] $configFileName
 
     # Path to the key to save in the config file
-    $privateKeyFileNamePosix = "/home/$remoteUser/.ssh/key"
+    $privateKeyFileNamePosix = "/home/$dssUser/.ssh/key"
 
     # Write the server configuration
-    $stream.WriteLine("Host $remoteHost");
-    $stream.WriteLine("    HostName $remoteHost");
-    $stream.WriteLine("    User $remoteUser");
+    $stream.WriteLine("Host $dssHost");
+    $stream.WriteLine("    HostName $dssHost");
+    $stream.WriteLine("    User $dssUser");
     $stream.WriteLine("    IdentityFile $privateKeyFileNamePosix");
 
     # Close stream
@@ -229,48 +228,60 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
 
 # Write a summary of all settings to Desktop
 # Uses global variables
-function Write-SettingsSummary()
+function Write-SettingsSummary($summaryFileName)
 {   
-    # File name
-    $fileName = [Environment]::GetFolderPath("Desktop") + "\obit_settings.txt"
-
     # Open stream
-    $stream = [System.IO.StreamWriter] $fileName
+    $stream = [System.IO.StreamWriter] $summaryFileName
 
-    # Write the key
+    # Write the summary
+    $stream.WriteLine("[Hardware]")
+    $stream.WriteLine("Computer name                       : $env:COMPUTERNAME")
+    $stream.WriteLine("Acquisition machine                 : <please fill in for your records>")
+    $stream.WriteLine("Lab                                 : <please fill in for your records>")
+    $stream.WriteLine("")
     $stream.WriteLine("[Settings]")
     $stream.WriteLine("")
-    $stream.WriteLine("Installation dir                : $INSTALL_DIR")
-    $stream.WriteLine("JAVA runtime in use             : $FINAL_JRE_PATH")
-    $stream.WriteLine("User folder                     : $USER_FOLDER")
-    $stream.WriteLine("Datamover data folder           : $DATAMOVER_DATA_FOLDER")
-    $stream.WriteLine("Local user                      : $LOCAL_USER")
-    $stream.WriteLine("Remote user                     : $REMOTE_USER")
-    $stream.WriteLine("Remote host                     : $REMOTE_HOST")
-    $stream.WriteLine("Remote host port                : $REMOTE_PORT")
-    $stream.WriteLine("Remote dropbox path             : $REMOTE_PATH")
-    $stream.WriteLine("Remote 'lastchanged' path       : $REMOTE_LASTCHANGED_PATH")
-    $stream.WriteLine("Annotation Tool acquisition type: $ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE")
-    $stream.WriteLine("Accept self-signed certificates : $ACCEPT_SELF_SIGNED_CERTIFICATES")
+    $stream.WriteLine("Installation dir                    : $INSTALL_DIR")
+    $stream.WriteLine("Using existing JAVA installation    : $SYSTEM_JAVA")
+    $stream.WriteLine("JAVA runtime in use                 : $FINAL_JRE_PATH")
+    $stream.WriteLine("")
+    $stream.WriteLine("User folder                         : $USER_FOLDER")
+    $stream.WriteLine("Datamover data folder               : $DATAMOVER_DATA_FOLDER")
+    $stream.WriteLine("Local user                          : $LOCAL_USER")
+    $stream.WriteLine("")
+    $stream.WriteLine("openBIS host                        : $OPENBIS_HOST")
+    $stream.WriteLine("openBIS host port                   : $OPENBIS_PORT")
+    $stream.WriteLine("")
+    $stream.WriteLine("Datastore server                    : $DSS_HOST")
+    $stream.WriteLine("Datastore server user               : $DSS_USER")
+    $stream.WriteLine("Datastore server dropbox path       : $DSS_DROPBOX_PATH")
+    $stream.WriteLine("Datastore server 'lastchanged' path : $DSS_LASTCHANGED_PATH")
+    $stream.WriteLine("")
+    $stream.WriteLine("Annotation Tool acquisition type    : $ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE")
+    $stream.WriteLine("Accept self-signed certificates     : $ACCEPT_SELF_SIGNED_CERTIFICATES")
 
     $stream.WriteLine("")
     $stream.WriteLine("[Generated configuration files]")
     $stream.WriteLine("")
-    $stream.WriteLine("Datamover JSL                   : $INSTALL_DIR\obit_datamover_jsl\jsl_static.ini")
-    $stream.WriteLine("Datamover                       : $INSTALL_DIR\obit_datamover_jsl\datamover\etc\service.properties")
-    $stream.WriteLine("Annotation Tool                 : $INSTALL_DIR\obit_annotation_tool\AnnotationTool.ini")
-    $stream.WriteLine("Annotation Tool Admin           : $INSTALL_DIR\obit_annotation_tool\AnnotationToolAdmin.ini")
-    $stream.WriteLine("SSH key and config (secret!)    : $INSTALL_DIR\obit_datamover_jsl\datamover\bin\home\$LOCAL_USER\.ssh")
+    $stream.WriteLine("Datamover JSL                       : $INSTALL_DIR\obit_datamover_jsl\jsl_static.ini")
+    $stream.WriteLine("Datamover                           : $INSTALL_DIR\obit_datamover_jsl\datamover\etc\service.properties")
+    $stream.WriteLine("Annotation Tool                     : $INSTALL_DIR\obit_annotation_tool\AnnotationTool.ini")
+    $stream.WriteLine("Annotation Tool Admin               : $INSTALL_DIR\obit_annotation_tool\AnnotationToolAdmin.ini")
+    $stream.WriteLine("SSH key and config (secret!)        : $INSTALL_DIR\obit_datamover_jsl\datamover\bin\home\$LOCAL_USER\.ssh")
 
     $stream.WriteLine("")
-    $stream.WriteLine("[Downloaded components]")
+    $stream.WriteLine("[Downloaded/used components]")
     $stream.WriteLine("")
-    $stream.WriteLine("Platform                        : $PLATFORM_N_BITS bits")
-    $stream.WriteLine("Datamover JSL                   : $DATAMOVER_JSL_URL")
-    $stream.WriteLine("Datamover                       : $DATAMOVER_URL")
-    $stream.WriteLine("Annotation Tool                 : $OBIT_ANNOTATION_TOOL_URL")
-    $stream.WriteLine("JAVA Runtime                    : $JAVA_URL")
-    
+    $stream.WriteLine("Platform                            : $PLATFORM_N_BITS bits")
+    $stream.WriteLine("Datamover JSL                       : $DATAMOVER_JSL_URL")
+    $stream.WriteLine("Datamover                           : $DATAMOVER_URL")
+    $stream.WriteLine("Annotation Tool                     : $OBIT_ANNOTATION_TOOL_URL")
+    $stream.WriteLine("JAVA Runtime                        : $JAVA_URL")
+
+    $stream.WriteLine("")
+    $stream.WriteLine("[Comments]")
+    $stream.WriteLine("<please fill in for your records>")
+
     # Close stream
     $stream.close()
 
