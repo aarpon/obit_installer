@@ -226,3 +226,52 @@ function Write-SSH-Information($sshFolder, $remoteHost, $remoteUser)
     $stream.close()
 
 }
+
+# Write a summary of all settings to Desktop
+# Uses global variables
+function Write-SettingsSummary()
+{   
+    # File name
+    $fileName = [Environment]::GetFolderPath("Desktop") + "\obit_settings.txt"
+
+    # Open stream
+    $stream = [System.IO.StreamWriter] $fileName
+
+    # Write the key
+    $stream.WriteLine("[Settings]")
+    $stream.WriteLine("")
+    $stream.WriteLine("Installation dir                : $INSTALL_DIR")
+    $stream.WriteLine("JAVA runtime in use             : $FINAL_JRE_PATH")
+    $stream.WriteLine("User folder                     : $USER_FOLDER")
+    $stream.WriteLine("Datamover data folder           : $DATAMOVER_DATA_FOLDER")
+    $stream.WriteLine("Local user                      : $LOCAL_USER")
+    $stream.WriteLine("Remote user                     : $REMOTE_USER")
+    $stream.WriteLine("Remote host                     : $REMOTE_HOST")
+    $stream.WriteLine("Remote host port                : $REMOTE_PORT")
+    $stream.WriteLine("Remote dropbox path             : $REMOTE_PATH")
+    $stream.WriteLine("Remote 'lastchanged' path       : $REMOTE_LASTCHANGED_PATH")
+    $stream.WriteLine("Annotation Tool acquisition type: $ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE")
+    $stream.WriteLine("Accept self-signed certificates : $ACCEPT_SELF_SIGNED_CERTIFICATES")
+
+    $stream.WriteLine("")
+    $stream.WriteLine("[Generated configuration files]")
+    $stream.WriteLine("")
+    $stream.WriteLine("Datamover JSL                   : $INSTALL_DIR\obit_datamover_jsl\jsl_static.ini")
+    $stream.WriteLine("Datamover                       : $INSTALL_DIR\obit_datamover_jsl\datamover\etc\service.properties")
+    $stream.WriteLine("Annotation Tool                 : $INSTALL_DIR\obit_annotation_tool\AnnotationTool.ini")
+    $stream.WriteLine("Annotation Tool Admin           : $INSTALL_DIR\obit_annotation_tool\AnnotationToolAdmin.ini")
+    $stream.WriteLine("SSH key and config (secret!)    : $INSTALL_DIR\obit_datamover_jsl\datamover\bin\home\$LOCAL_USER\.ssh")
+
+    $stream.WriteLine("")
+    $stream.WriteLine("[Downloaded components]")
+    $stream.WriteLine("")
+    $stream.WriteLine("Platform                        : $PLATFORM_N_BITS bits")
+    $stream.WriteLine("Datamover JSL                   : $DATAMOVER_JSL_URL")
+    $stream.WriteLine("Datamover                       : $DATAMOVER_URL")
+    $stream.WriteLine("Annotation Tool                 : $OBIT_ANNOTATION_TOOL_URL")
+    $stream.WriteLine("JAVA Runtime                    : $JAVA_URL")
+    
+    # Close stream
+    $stream.close()
+
+}

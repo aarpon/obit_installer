@@ -19,7 +19,7 @@ $DATAMOVER_FILENAME = "datamover-13.07.0-r29510.zip"
 $DATAMOVER_URL      = "https://wiki-bsse.ethz.ch/download/attachments/21567716/" + $DATAMOVER_FILENAME
 
 # ANNOTATION TOOL
-$OBIT_ANNOTATION_TOOL_VERSION  = "0.5.5"
+$OBIT_ANNOTATION_TOOL_VERSION  = "0.5.6"
 $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL_VERSION + "_" + $PLATFORM_N_BITS + "bit.zip"
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
