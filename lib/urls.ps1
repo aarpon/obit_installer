@@ -25,13 +25,13 @@ $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/7u72-b14"
+$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/7u75-b13"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "server-jre-7u72-windows-x64.tar.gz"
+    $JAVA_FILENAME = "server-jre-7u75-windows-x64.tar.gz"
 }
 else
 {
-    $JAVA_FILENAME = "jre-7u72-windows-i586.tar.gz"
+    $JAVA_FILENAME = "jre-7u75-windows-i586.tar.gz"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
