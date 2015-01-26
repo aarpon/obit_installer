@@ -8,6 +8,7 @@
 $BIN_DIR = $PSScriptRoot + "\..\bin"
 $TAR_EXE = $BIN_DIR + "\tar.exe"
 $WGET_EXE = $BIN_DIR + "\wget.exe"
+$SSHKEYGEN_EXE = $BIN_DIR + "\ssh-keygen.exe"
 
 # DATAMOVER_JSL
 $DATAMOVER_JSL_VERSION = "0.1.0"
