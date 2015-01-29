@@ -192,7 +192,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
 }
 
 # Create the Annotation Tool settings for the acquisition machine
-function Write-SSH-Information($sshFolder, $dssHost, $dssUser)
+function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
 {
     # Write key
     $privateKeyFileName = $sshFolder + "\key"
@@ -213,7 +213,7 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser)
     $stream = [System.IO.StreamWriter] $configFileName
 
     # Path to the key to save in the config file
-    $privateKeyFileNamePosix = "/home/$dssUser/.ssh/key"
+    $privateKeyFileNamePosix = "/home/$localUser/.ssh/key"
 
     # Write the server configuration
     $stream.WriteLine("Host $dssHost");
