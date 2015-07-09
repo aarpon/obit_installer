@@ -20,18 +20,18 @@ $DATAMOVER_FILENAME = "datamover-13.07.0-r29510.zip"
 $DATAMOVER_URL      = "https://wiki-bsse.ethz.ch/download/attachments/21567716/" + $DATAMOVER_FILENAME
 
 # ANNOTATION TOOL
-$OBIT_ANNOTATION_TOOL_VERSION  = "0.6.2"
+$OBIT_ANNOTATION_TOOL_VERSION  = "0.6.3"
 $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL_VERSION + "_" + $PLATFORM_N_BITS + "bit.zip"
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/7u75-b13"
+$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/7u79-b15"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "server-jre-7u75-windows-x64.tar.gz"
+    $JAVA_FILENAME = "server-jre-7u79-windows-x64.tar.gz"
 }
 else
 {
-    $JAVA_FILENAME = "jre-7u75-windows-i586.tar.gz"
+    $JAVA_FILENAME = "jre-7u79-windows-i586.tar.gz"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
