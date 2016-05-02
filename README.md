@@ -7,7 +7,7 @@ Run obit_installer.ps1 from Windows PowerShell (ISE) ad an administrator.
 
 ### Dependences
 
-obit_installer requires Windows Management Framework 4.0, Microsoft .NET Framework 4.5 and Windows > XP
+obit_installer requires Windows Management Framework 4.0, Microsoft .NET Framework 4.5 and Windows > XP.
 * http://www.microsoft.com/en-us/download/details.aspx?id=40855
 * https://www.microsoft.com/en-us/download/details.aspx?id=42642
 
