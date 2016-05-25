@@ -68,7 +68,7 @@ function Configure-Datamover($datamoverPath, $datamoverDataIncomingPath, $datamo
 
     # File name
     $fileName = $datamoverPath + "\etc\service.properties"
-    
+
     # Open stream
     $stream = [System.IO.StreamWriter] $fileName
 
@@ -145,7 +145,7 @@ function Configure-Datamover_JSL($datamoverJSLPath, $localUser, $jrePath, $platf
 
 # Create the Annotation Tool settings for the acquisition machine
 function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort, $datamoverDataIncomingPath, `
-    $annotationToolAdminAcqType, $acceptSelfSignedCertificates)
+    $annotationToolAdminAcqType, $acceptSelfSignedCertificates, $annotationToolAdminAcqFriendlyName)
 {
     # Settings file path
     $settingsDirPath = $env:ProgramData + "\obit\AnnotationTool"
@@ -155,6 +155,14 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     if (! (Test-Path $settingsDirPath))
     {
         New-Item -ItemType Directory $settingsDirPath | Out-Null
+
+        # Test that creation was successful
+        if(!(Test-Path -Path $settingsDirPath ))
+        {
+           Write-Host ""
+           Write-Host "Could not create folder $settingsDirPath. Aborting." -ForegroundColor "red"
+           exit 1
+        }
     }
 
     # Build complete openBIS URL
@@ -174,7 +182,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
 
     # Add "AnnotationTool_Properties element
     [System.XML.XMLElement] $root = $doc.CreateElement("AnnotationTool_Properties")
-    $root.SetAttribute("version", "4")
+    $root.SetAttribute("version", "6")
     $doc.appendChild($root) | Out-Null
 
     # Add a "server" element
@@ -182,6 +190,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     $server.SetAttribute("UserDataDir", $userFolder)
     $server.SetAttribute("DatamoverIncomingDir", $datamoverDataIncomingPath)
     $server.SetAttribute("AcquisitionStation", $annotationToolAdminAcqType)
+	$server.SetAttribute("HumanFriendlyHostName", $annotationToolAdminAcqFriendlyName)
     $server.SetAttribute("AcceptSelfSignedCertificates", $acceptSelfSignedCertificates)
     $server.SetAttribute("OpenBISURL", $openBISURL)
     $root.AppendChild($server) | Out-Null
@@ -236,7 +245,7 @@ function Write-SettingsSummary($summaryFileName)
     # Write the summary
     $stream.WriteLine("[Hardware]")
     $stream.WriteLine("Computer name                       : $env:COMPUTERNAME")
-    $stream.WriteLine("Acquisition machine                 : <please fill in for your records>")
+    $stream.WriteLine("Acquisition machine                 : $ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME")
     $stream.WriteLine("Lab                                 : <please fill in for your records>")
     $stream.WriteLine("")
     $stream.WriteLine("[Settings]")
