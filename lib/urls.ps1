@@ -11,16 +11,16 @@ $WGET_EXE = $BIN_DIR + "\wget.exe"
 $SSHKEYGEN_EXE = $BIN_DIR + "\ssh-keygen.exe"
 
 # DATAMOVER_JSL
-$DATAMOVER_JSL_VERSION = "0.1.0"
+$DATAMOVER_JSL_VERSION = "0.2.0"
 $DATAMOVER_JSL_FILENAME = $DATAMOVER_JSL_VERSION + ".zip"
 $DATAMOVER_JSL_URL      = "https://github.com/aarpon/obit_datamover_jsl/archive/" + $DATAMOVER_JSL_FILENAME
 
 # DATAMOVER
-$DATAMOVER_FILENAME = "datamover-13.07.0-r29510.zip"
+$DATAMOVER_FILENAME = "datamover-15.06.0-r34542.zip"
 $DATAMOVER_URL      = "https://wiki-bsse.ethz.ch/download/attachments/21567716/" + $DATAMOVER_FILENAME
 
 # ANNOTATION TOOL
-$OBIT_ANNOTATION_TOOL_VERSION  = "0.8.4"
+$OBIT_ANNOTATION_TOOL_VERSION  = "0.9.0"
 $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL_VERSION + "_" + $PLATFORM_N_BITS + "bit.zip"
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
