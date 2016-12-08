@@ -235,7 +235,55 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
 
 }
 
-# Write a summary of all settings to Desktop
+# Write the settings to a JSON File.
+# Uses global variables.
+function Write-Settings($settingsFileName) {
+
+    # Check and add extension if needed
+    if (! $summaryFileName.EndsWith(".json")) {
+        $summaryFileName = $summaryFileName + ".json"
+    }
+
+    # Write the summary
+    $settings = @{
+        computer_name              = $env:COMPUTERNAME;
+        computer_friendly_name     = $ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME;
+        installation_dir           = $INSTALL_DIR;
+        use_existing_java          = $SYSTEM_JAVA;
+        java_path                  = $FINAL_JRE_PATH;
+        user_folder                = $USER_FOLDER;
+        datamover_data_folder      = $DATAMOVER_DATA_FOLDER;
+        local_user                 = $LOCAL_USER;
+        openbis_host               = $OPENBIS_HOST;
+        openbis_host_port          = $OPENBIS_PORT;
+        datastore_host             = $DSS_HOST;
+        datastore_user             = $DSS_USER;
+        datastore_dropbox_path     = $DSS_DROPBOX_PATH;
+        datastore_lastchanged_path = $DSS_LASTCHANGED_PATH;
+        annotation_tool_acq_type   = $ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE;
+        accept_self_signed_certs   = $ACCEPT_SELF_SIGNED_CERTIFICATES;
+        platform_bits              = $PLATFORM_N_BITS;
+        }
+
+    # Create JSON file
+    $settings | ConvertTo-Json -depth 999 | Out-File $settingsFileName
+}
+
+# Read settings from JSON file and return a Powershell hashtable.
+function Read-Settings($settingsFileName) {
+
+    # Read and convert the JSON file
+    $json = Get-Content -Raw -Path $settingsFileName | ConvertFrom-Json
+
+    # COnvert the Powershell object to a hashtable
+    $settings = @{}
+    $json.json.properties | Foreach { $ht[$_.Name] = $_.Value }
+
+    # Return the object
+    return $settings
+}
+
+# Write a summary of all settings in human-friendly form
 # Uses global variables
 function Write-SettingsSummary($summaryFileName)
 {   
@@ -294,4 +342,34 @@ function Write-SettingsSummary($summaryFileName)
     # Close stream
     $stream.close()
 
+}
+
+
+# Write a summary of all settings to Desktop
+# Uses global variables
+function read-SettingsSummary($summaryFileName) {   
+
+    # Build regular expression
+    $regex = '^(.*)\s*:\s(\w*)$'
+
+    # Dictionary of settings
+    $SETTINGS = @{}
+
+    # Open stream
+    $reader = [System.IO.File]::OpenText($summaryFileName)
+    while ($null -ne ($line = $reader.ReadLine())) {
+
+        # Process current line
+        if ($line -match $regex) {
+
+            $key = $matches[1].TrimEnd()
+            $value = $matches[2]
+
+            $SETTINGS.Add($key, $value)
+
+        }
+    }
+
+    # Return the dictionary
+    return $SETTINGS
 }
