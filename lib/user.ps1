@@ -44,6 +44,19 @@ function Add-LocalUserAccount($userName, $password)
     $group.Add($user.path)
 }
 
+# Remove inherited permissions from folder
+# Make sure to assign some explicit permissions first!
+Function Remove-Inherited-Permissions($folder)
+{
+    $acl = Get-Acl $folder
+
+    # Remove inherited permissions
+    $acl.SetAccessRuleProtection($True, $False)
+
+    # Write updated ACL back
+    Set-Acl $folder $acl | Out-Null
+}
+
 # Set-Owner: from https://gallery.technet.microsoft.com/scriptcenter/Set-Owner-ff4db177
 Function Set-Owner {
     <#

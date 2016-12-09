@@ -18,12 +18,10 @@ function Save-Shortcut($sourceExe, $destinationPath)
     $Shortcut.Save()
 }
 
-# Set ACLs (with inheritance)
+# Set full permissions to Everyone.
 #
 # This function does not recurse since it is assumed that the folder is empty.
-# If some subfolder has explicit "no inheritance" flags, the FullControl control 
-# type might not apply.
-function Set-FullPermission($folder)
+function Set-FullPermissionToEveryone($folder)
 {
     # Make sure $folder is a directory
     if (! ((Get-Item $folder) -is [System.IO.DirectoryInfo]))
@@ -37,8 +35,33 @@ function Set-FullPermission($folder)
     $acl = Get-Acl $folder
 
     # Access rule
-    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("Everyone", `
-        "FullControl", "ContainerInherit, Objectinherit", "InheritOnly", "Allow")
+    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule("Everyone",
+        "FullControl", "ContainerInherit, Objectinherit", "None", "Allow")
+
+    # Set access sule
+    $acl.SetAccessRule($accessRule)
+    $acl | Set-Acl $folder
+}
+
+# Set full permissions to specific user.
+#
+# This function does not recurse since it is assumed that the folder is empty.
+function Set-FullPermissionToUser($folder, $username)
+{
+    # Make sure $folder is a directory
+    if (! ((Get-Item $folder) -is [System.IO.DirectoryInfo]))
+    { 
+        Write-Host "$folder is not a valid directory."
+        Write-Host "Skipping"
+        return;
+    }
+
+    # Get the ACLs for $folder
+    $acl = Get-Acl $folder
+
+    # Access rule
+    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule($username,
+        "FullControl", "ContainerInherit, Objectinherit", "None", "Allow")
 
     # Set access sule
     $acl.SetAccessRule($accessRule)

@@ -233,6 +233,15 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
     # Close stream
     $stream.close()
 
+    # Write known_hosts file
+    $configFileName = $sshFolder + "\known_hosts"
+
+    # Open stream
+    $stream = [System.IO.StreamWriter] $configFileName
+
+    # Close stream
+    $stream.close()
+
 }
 
 # Write the settings to a JSON File.
