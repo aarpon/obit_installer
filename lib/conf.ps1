@@ -1,4 +1,46 @@
-﻿# Write the Annotation Tool (Admin) configuration file
+﻿# Set default option valies
+function Set-DefaultOptionValues()
+{
+    # Set all defaults
+    $DEFAULT = @{
+        "INSTALL_DIR" = "C:\oBIT";
+        "SYSTEM_JAVA" = "N";
+        "FINAL_JRE_PATH" = "C:\Program Files\Java\jre7";
+        "USER_FOLDER" = "D:\toOpenBIS";
+        "DATAMOVER_DATA_FOLDER" = "D:\Datamover";
+        "LOCAL_USER" = "openbis";
+        "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name;
+        "DATAMOVER_SERVICE_NAME" = "Datamover";
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters";
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Generic light microscopes"
+    }
+
+    return $DEFAULT
+}
+
+# Import options from file
+function Set-OptionValuesFromFile($fileName)
+{
+    # Set all defaults first
+    $DEFAULT = Set-DefaultOptionValues
+
+    # Now override with the values from the file
+    $settings = Read-Settings -settingsFileName $fileName
+
+    # Some values do not have defaults, but could be imported - we label clearly.
+    $DEFAULT.IMPORTED_OPENBIS_HOST = ""
+    $DEFAULT.IMPORTED_OPENBIS_PORT = ""
+    $DEFAULT.IMPORTED_DSS_HOST = ""
+    $DEFAULT.IMPORTED_DSS_USER = ""
+    $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= ""
+    $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = ""
+    $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = ""
+    $DEFAULT.IMPORTED_ACCEPT_SELF_SIGNED_CERTIFICATES = ""
+
+    return $DEFAULT
+}
+
+# Write the Annotation Tool (Admin) configuration file
 function Write-AnnotationToolConfig($annotationToolPath, $jrePath, $platformNBits, $isAdmin)
 {
     # Differences between AT and AT Admin
