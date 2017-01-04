@@ -262,6 +262,7 @@ function Write-Settings($settingsFileName) {
         java_path                  = $FINAL_JRE_PATH;
         user_folder                = $USER_FOLDER;
         datamover_data_folder      = $DATAMOVER_DATA_FOLDER;
+        datamover_service_name     = $DATAMOVER_SERVICE_NAME;
         local_user                 = $LOCAL_USER;
         openbis_host               = $OPENBIS_HOST;
         openbis_host_port          = $OPENBIS_PORT;
@@ -313,6 +314,7 @@ function Write-SettingsSummary($summaryFileName)
     $stream.WriteLine("")
     $stream.WriteLine("User folder                         : $USER_FOLDER")
     $stream.WriteLine("Datamover data folder               : $DATAMOVER_DATA_FOLDER")
+    $stream.WriteLine("Datamover service name              : $DATAMOVER_SERVICE_NAME")
     $stream.WriteLine("Local user                          : $LOCAL_USER")
     $stream.WriteLine("")
     $stream.WriteLine("openBIS host                        : $OPENBIS_HOST")
