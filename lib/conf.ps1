@@ -9,9 +9,9 @@ function Set-DefaultOptionValues()
         "USER_FOLDER" = "D:\toOpenBIS";
         "DATAMOVER_DATA_FOLDER" = "D:\Datamover";
         "LOCAL_USER" = "openbis";
-        "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name;
+        "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
         "DATAMOVER_SERVICE_NAME" = "Datamover";
-        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters";
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters"
         "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Generic light microscopes"
     }
 
@@ -25,17 +25,25 @@ function Set-OptionValuesFromFile($fileName)
     $DEFAULT = Set-DefaultOptionValues
 
     # Now override with the values from the file
-    $settings = Read-Settings -settingsFileName $fileName
+    $imported_settings = Read-Settings -settingsFileName $fileName
+    $DEFAULT.INSTALL_DIR = $imported_settings.installation_dir
+    $DEFAULT.SYSTEM_JAVA = $imported_settings.use_existing_java
+    $DEFAULT.FINAL_JRE_PATH = $imported_settings.java_path
+    $DEFAULT.USER_FOLDER = $imported_settings.user_folder
+    $DEFAULT.DATAMOVER_DATA_FOLDER = $imported_settings.datamover_data_folder
+    $DEFAULT.LOCAL_USER = $imported_settings.local_user
+    $DEFAULT.ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME = $imported_settings.computer_friendly_name
+    $DEFAULT.DATAMOVER_SERVICE_NAME = $imported_settings.datamover_service_name
 
     # Some values do not have defaults, but could be imported - we label clearly.
-    $DEFAULT.IMPORTED_OPENBIS_HOST = ""
-    $DEFAULT.IMPORTED_OPENBIS_PORT = ""
-    $DEFAULT.IMPORTED_DSS_HOST = ""
-    $DEFAULT.IMPORTED_DSS_USER = ""
-    $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= ""
-    $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = ""
-    $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = ""
-    $DEFAULT.IMPORTED_ACCEPT_SELF_SIGNED_CERTIFICATES = ""
+    $DEFAULT.IMPORTED_OPENBIS_HOST = $imported_settings.openbis_host
+    $DEFAULT.IMPORTED_OPENBIS_PORT = $imported_settings.openbis_host_port
+    $DEFAULT.IMPORTED_DSS_HOST = $imported_settings.datastore_host
+    $DEFAULT.IMPORTED_DSS_USER = $imported_settings.datastore_user
+    $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= $imported_settings.datastore_dropbox_path
+    $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = $imported_settings.datastore_lastchanged_path
+    $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = $imported_settings.annotation_tool_acq_type
+    $DEFAULT.IMPORTED_ACCEPT_SELF_SIGNED_CERTIFICATES = $imported_settings.accept_self_signed_certs
 
     return $DEFAULT
 }
@@ -321,15 +329,11 @@ function Write-Settings($settingsFileName) {
     $settings | ConvertTo-Json -depth 999 | Out-File $settingsFileName
 }
 
-# Read settings from JSON file and return a Powershell hashtable.
+# Read settings from JSON file.
 function Read-Settings($settingsFileName) {
 
     # Read and convert the JSON file
-    $json = Get-Content -Raw -Path $settingsFileName | ConvertFrom-Json
-
-    # COnvert the Powershell object to a hashtable
-    $settings = @{}
-    $json.json.properties | Foreach { $ht[$_.Name] = $_.Value }
+    $settings = Get-Content -Raw -Path $settingsFileName | ConvertFrom-Json
 
     # Return the object
     return $settings
