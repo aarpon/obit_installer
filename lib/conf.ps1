@@ -11,6 +11,7 @@ function Set-DefaultOptionValues()
         "LOCAL_USER" = "openbis";
         "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
         "DATAMOVER_SERVICE_NAME" = "Datamover";
+        "ACCEPT_SELF_SIGNED_CERTIFICATES" = "no";
         "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters"
         "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Generic light microscopes"
     }
@@ -25,6 +26,7 @@ function Set-OptionValuesFromFile($fileName)
     $DEFAULT = Set-DefaultOptionValues
 
     # Now override with the values from the file
+    # Since the machine friendly name should be unique for each machine, we do not use the imported value.
     $imported_settings = Read-Settings -settingsFileName $fileName
     $DEFAULT.INSTALL_DIR = $imported_settings.installation_dir
     $DEFAULT.SYSTEM_JAVA = $imported_settings.use_existing_java
@@ -32,8 +34,8 @@ function Set-OptionValuesFromFile($fileName)
     $DEFAULT.USER_FOLDER = $imported_settings.user_folder
     $DEFAULT.DATAMOVER_DATA_FOLDER = $imported_settings.datamover_data_folder
     $DEFAULT.LOCAL_USER = $imported_settings.local_user
-    $DEFAULT.ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME = $imported_settings.computer_friendly_name
     $DEFAULT.DATAMOVER_SERVICE_NAME = $imported_settings.datamover_service_name
+    $DEFAULT.ACCEPT_SELF_SIGNED_CERTIFICATES = $imported_settings.accept_self_signed_certs
 
     # Some values do not have defaults, but could be imported - we label clearly.
     $DEFAULT.IMPORTED_OPENBIS_HOST = $imported_settings.openbis_host
@@ -43,7 +45,6 @@ function Set-OptionValuesFromFile($fileName)
     $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= $imported_settings.datastore_dropbox_path
     $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = $imported_settings.datastore_lastchanged_path
     $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = $imported_settings.annotation_tool_acq_type
-    $DEFAULT.IMPORTED_ACCEPT_SELF_SIGNED_CERTIFICATES = $imported_settings.accept_self_signed_certs
 
     return $DEFAULT
 }
