@@ -300,8 +300,8 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
 function Write-Settings($settingsFileName) {
 
     # Check and add extension if needed
-    if (! $summaryFileName.EndsWith(".json")) {
-        $summaryFileName = $summaryFileName + ".json"
+    if (! $settingsFileName.EndsWith(".json")) {
+        $settingsFileName = $settingsFileName + ".json"
     }
 
     # Write the summary
