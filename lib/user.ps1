@@ -44,6 +44,86 @@ function Add-LocalUserAccount($userName, $password)
     $group.Add($user.path)
 }
 
+# Remove inherited permissions from folder.
+# This function does NOT recurse into subfolders.
+# Make sure to assign some explicit permissions first!
+Function Remove-Inherited-Permissions($folder)
+{
+    $acl = Get-Acl $folder
+
+    # Remove inherited permissions
+    $acl.SetAccessRuleProtection($True, $False)
+
+    # Write updated ACL back
+    Set-Acl $folder $acl | Out-Null
+}
+
+# Set full permissions to Everyone recursively on given folder.
+function Set-FullPermissionToEveryone($folder)
+{
+    # Make sure $folder is a directory
+    if (! ((Get-Item $folder) -is [System.IO.DirectoryInfo]))
+    { 
+        Write-Host "$folder is not a valid directory."
+        Write-Host "Skipping"
+        return;
+    }
+
+    # Set owner to current user (which is an admin) first
+    Set-Owner -Path $folder -Account "$env:COMPUTERNAME\$env:USERNAME"
+
+    # Get the ACLs for $folder
+    $acl = Get-Acl $folder
+
+    # Access rule
+    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule(
+        "Everyone", "FullControl", "ContainerInherit, Objectinherit", "None", "Allow")
+
+    # Set access sule
+    $acl.SetAccessRule($accessRule)
+    $acl | Set-Acl $folder
+
+    # Now process children recursively
+    ForEach($item in Get-ChildItem $folder) {
+
+        if ($item -is [System.IO.DirectoryInfo]) { 
+            Set-FullPermissionToEveryone -Folder "$folder\$item"
+        }
+    }
+
+}
+
+# Set full permissions to specific user recursively on given folder.
+function Set-FullPermissionToUser($folder, $username)
+{
+    # Make sure $folder is a directory
+    if (! ((Get-Item $folder) -is [System.IO.DirectoryInfo]))
+    { 
+        Write-Host "$folder is not a valid directory."
+        Write-Host "Skipping"
+        return;
+    }
+
+    # Get the ACLs for $folder
+    $acl = Get-Acl $folder
+
+    # Access rule
+    $AccessRule= New-Object System.Security.AccessControl.FileSystemAccessRule(
+        $username, "FullControl", "ContainerInherit, Objectinherit", "None", "Allow")
+
+    # Set access sule
+    $acl.SetAccessRule($accessRule)
+    $acl | Set-Acl $folder
+
+    # Now process children recursively
+    ForEach($item in Get-ChildItem $folder) {
+
+        if ($item -is [System.IO.DirectoryInfo]) { 
+            Set-FullPermissionToUser -Folder "$folder\$item" -UserName $username
+        }
+    }
+}
+
 # Set-Owner: from https://gallery.technet.microsoft.com/scriptcenter/Set-Owner-ff4db177
 Function Set-Owner {
     <#

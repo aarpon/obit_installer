@@ -1,4 +1,55 @@
-﻿# Write the Annotation Tool (Admin) configuration file
+﻿# Set default option valies
+function Set-DefaultOptionValues()
+{
+    # Set all defaults
+    $DEFAULT = @{
+        "INSTALL_DIR" = "C:\oBIT";
+        "SYSTEM_JAVA" = "N";
+        "FINAL_JRE_PATH" = "C:\Program Files\Java\jre7";
+        "USER_FOLDER" = "D:\toOpenBIS";
+        "DATAMOVER_DATA_FOLDER" = "D:\Datamover";
+        "LOCAL_USER" = "openbis";
+        "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
+        "DATAMOVER_SERVICE_NAME" = "Datamover";
+        "ACCEPT_SELF_SIGNED_CERTIFICATES" = "no";
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters"
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Generic light microscopes"
+    }
+
+    return $DEFAULT
+}
+
+# Import options from file
+function Set-OptionValuesFromFile($fileName)
+{
+    # Set all defaults first
+    $DEFAULT = Set-DefaultOptionValues
+
+    # Now override with the values from the file
+    # Since the machine friendly name should be unique for each machine, we do not use the imported value.
+    $imported_settings = Read-Settings -settingsFileName $fileName
+    $DEFAULT.INSTALL_DIR = $imported_settings.installation_dir
+    $DEFAULT.SYSTEM_JAVA = $imported_settings.use_existing_java
+    $DEFAULT.FINAL_JRE_PATH = $imported_settings.java_path
+    $DEFAULT.USER_FOLDER = $imported_settings.user_folder
+    $DEFAULT.DATAMOVER_DATA_FOLDER = $imported_settings.datamover_data_folder
+    $DEFAULT.LOCAL_USER = $imported_settings.local_user
+    $DEFAULT.DATAMOVER_SERVICE_NAME = $imported_settings.datamover_service_name
+    $DEFAULT.ACCEPT_SELF_SIGNED_CERTIFICATES = $imported_settings.accept_self_signed_certs
+
+    # Some values do not have defaults, but could be imported - we label clearly.
+    $DEFAULT.IMPORTED_OPENBIS_HOST = $imported_settings.openbis_host
+    $DEFAULT.IMPORTED_OPENBIS_PORT = $imported_settings.openbis_host_port
+    $DEFAULT.IMPORTED_DSS_HOST = $imported_settings.datastore_host
+    $DEFAULT.IMPORTED_DSS_USER = $imported_settings.datastore_user
+    $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= $imported_settings.datastore_dropbox_path
+    $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = $imported_settings.datastore_lastchanged_path
+    $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = $imported_settings.annotation_tool_acq_type
+
+    return $DEFAULT
+}
+
+# Write the Annotation Tool (Admin) configuration file
 function Write-AnnotationToolConfig($annotationToolPath, $jrePath, $platformNBits, $isAdmin)
 {
     # Differences between AT and AT Admin
@@ -233,9 +284,63 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
     # Close stream
     $stream.close()
 
+    # Write known_hosts file
+    $configFileName = $sshFolder + "\known_hosts"
+
+    # Open stream
+    $stream = [System.IO.StreamWriter] $configFileName
+
+    # Close stream
+    $stream.close()
+
 }
 
-# Write a summary of all settings to Desktop
+# Write the settings to a JSON File.
+# Uses global variables.
+function Write-Settings($settingsFileName) {
+
+    # Check and add extension if needed
+    if (! $summaryFileName.EndsWith(".json")) {
+        $summaryFileName = $summaryFileName + ".json"
+    }
+
+    # Write the summary
+    $settings = @{
+        computer_name              = $env:COMPUTERNAME;
+        computer_friendly_name     = $ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME;
+        installation_dir           = $INSTALL_DIR;
+        use_existing_java          = $SYSTEM_JAVA;
+        java_path                  = $FINAL_JRE_PATH;
+        user_folder                = $USER_FOLDER;
+        datamover_data_folder      = $DATAMOVER_DATA_FOLDER;
+        datamover_service_name     = $DATAMOVER_SERVICE_NAME;
+        local_user                 = $LOCAL_USER;
+        openbis_host               = $OPENBIS_HOST;
+        openbis_host_port          = $OPENBIS_PORT;
+        datastore_host             = $DSS_HOST;
+        datastore_user             = $DSS_USER;
+        datastore_dropbox_path     = $DSS_DROPBOX_PATH;
+        datastore_lastchanged_path = $DSS_LASTCHANGED_PATH;
+        annotation_tool_acq_type   = $ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE;
+        accept_self_signed_certs   = $ACCEPT_SELF_SIGNED_CERTIFICATES;
+        platform_bits              = $PLATFORM_N_BITS;
+        }
+
+    # Create JSON file
+    $settings | ConvertTo-Json -depth 999 | Out-File $settingsFileName
+}
+
+# Read settings from JSON file.
+function Read-Settings($settingsFileName) {
+
+    # Read and convert the JSON file
+    $settings = Get-Content -Raw -Path $settingsFileName | ConvertFrom-Json
+
+    # Return the object
+    return $settings
+}
+
+# Write a summary of all settings in human-friendly form
 # Uses global variables
 function Write-SettingsSummary($summaryFileName)
 {   
@@ -256,6 +361,7 @@ function Write-SettingsSummary($summaryFileName)
     $stream.WriteLine("")
     $stream.WriteLine("User folder                         : $USER_FOLDER")
     $stream.WriteLine("Datamover data folder               : $DATAMOVER_DATA_FOLDER")
+    $stream.WriteLine("Datamover service name              : $DATAMOVER_SERVICE_NAME")
     $stream.WriteLine("Local user                          : $LOCAL_USER")
     $stream.WriteLine("")
     $stream.WriteLine("openBIS host                        : $OPENBIS_HOST")
@@ -294,4 +400,34 @@ function Write-SettingsSummary($summaryFileName)
     # Close stream
     $stream.close()
 
+}
+
+
+# Write a summary of all settings to Desktop
+# Uses global variables
+function read-SettingsSummary($summaryFileName) {   
+
+    # Build regular expression
+    $regex = '^(.*)\s*:\s(\w*)$'
+
+    # Dictionary of settings
+    $SETTINGS = @{}
+
+    # Open stream
+    $reader = [System.IO.File]::OpenText($summaryFileName)
+    while ($null -ne ($line = $reader.ReadLine())) {
+
+        # Process current line
+        if ($line -match $regex) {
+
+            $key = $matches[1].TrimEnd()
+            $value = $matches[2]
+
+            $SETTINGS.Add($key, $value)
+
+        }
+    }
+
+    # Return the dictionary
+    return $SETTINGS
 }
