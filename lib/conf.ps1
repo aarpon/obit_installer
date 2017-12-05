@@ -12,8 +12,8 @@ function Set-DefaultOptionValues()
         "ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME" = (Get-WmiObject -Class Win32_ComputerSystem -Property Name).Name
         "DATAMOVER_SERVICE_NAME" = "Datamover";
         "ACCEPT_SELF_SIGNED_CERTIFICATES" = "no";
-        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "BD Biosciences Cell Analyzers and Sorters"
-        "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Generic light microscopes"
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_1" = "Flow cytometry"
+        "ANNOTATION_TOOL_STATION_TYPES_OPTION_2" = "Microscopy"
     }
 
     return $DEFAULT
@@ -44,6 +44,19 @@ function Set-OptionValuesFromFile($fileName)
     $DEFAULT.IMPORTED_DSS_USER = $imported_settings.datastore_user
     $DEFAULT.IMPORTED_DSS_DROPBOX_PATH= $imported_settings.datastore_dropbox_path
     $DEFAULT.IMPORTED_DSS_LASTCHANGED_PATH = $imported_settings.datastore_lastchanged_path
+    # Update from earlier versions
+    if ($imported_settings.annotation_tool_acq_type -eq "BD Biosciences Cell Analyzers and Sorters")
+    {
+        $imported_settings.annotation_tool_acq_type = "Flow cytometry"
+    }
+    elseif ($imported_settings.annotation_tool_acq_type -eq "Generic light microscopes")
+    {
+        $imported_settings.annotation_tool_acq_type = "Microscopy"
+    }
+    else
+    {
+        # Nothing to do
+    }
     $DEFAULT.IMPORTED_ANNOTATION_TOOL_ADMIN_ACQUISITION_TYPE = $imported_settings.annotation_tool_acq_type
 
     return $DEFAULT
