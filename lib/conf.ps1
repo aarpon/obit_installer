@@ -1,8 +1,25 @@
-﻿# Set default option valies
+﻿# Map of hardware to dropbox folders
+function Get-HardwareToDropboxFolderMap()
+{
+    # Set all defaults
+    $HARDWAREDROPBOXMAP = @{
+        "MICROSCOPY" = "incoming-microscopy";
+        "BDLSRFORTESSA" = "incoming-lsrfortessa";
+        "BDFACSARIA" = "incoming-facsaria";
+        "BDINFLUX" = "incoming-influx";
+        "BIORADS3E" = "incoming-s3e";
+        "BCMOFLOXDP" = "incoming-mofloxdp";
+    }
+
+    return $HARDWAREDROPBOXMAP
+}
+
+# Set default option values
 function Set-DefaultOptionValues()
 {
     # Set all defaults
     $DEFAULT = @{
+        "SETTINGS_FILE_VERSION" = "1";
         "INSTALL_DIR" = "C:\oBIT";
         "SYSTEM_JAVA" = "N";
         "FINAL_JRE_PATH" = "C:\Program Files\Java\jre7";
@@ -28,6 +45,17 @@ function Set-OptionValuesFromFile($fileName)
     # Now override with the values from the file
     # Since the machine friendly name should be unique for each machine, we do not use the imported value.
     $imported_settings = Read-Settings -settingsFileName $fileName
+
+    # File version
+    if ([bool]($imported_settings.PSobject.Properties.name -match "settings_file_version") -eq $TRUE)
+    {
+       $DEFAULT.SETTINGS_FILE_VERSION = $imported_settings.settings_file_version
+    }
+    else
+    {
+        $DEFAULT.SETTINGS_FILE_VERSION = "0"
+    }
+
     $DEFAULT.INSTALL_DIR = $imported_settings.installation_dir
     $DEFAULT.SYSTEM_JAVA = $imported_settings.use_existing_java
     $DEFAULT.FINAL_JRE_PATH = $imported_settings.java_path
@@ -319,6 +347,7 @@ function Write-Settings($settingsFileName) {
 
     # Write the summary
     $settings = @{
+        settings_file_version      = 1;
         computer_name              = $env:COMPUTERNAME;
         computer_friendly_name     = $ANNOTATION_TOOL_ADMIN_ACQUISITION_FRIENDLY_NAME;
         installation_dir           = $INSTALL_DIR;
