@@ -25,13 +25,23 @@ $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/"
+$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "server-jre-8u151-windows-x64.tar.gz"
+    $JAVA_FILENAME = "server-jre-8u161-windows-x64.tar.gz"
 }
 else
 {
-    $JAVA_FILENAME = "jre-8u151-windows-i586.tar.gz"
+    $JAVA_FILENAME = "jre-8u161-windows-i586.tar.gz"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
+
+# JAVA FALLBACK URL
+if ($PLATFORM_N_BITS -eq 64)
+{
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/server-jre-8u161-windows-x64.tar.gz"
+}
+else
+{
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/jre-8u161-windows-i586.tar.gz"
+}
