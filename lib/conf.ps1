@@ -19,7 +19,7 @@ function Set-DefaultOptionValues()
 {
     # Set all defaults
     $DEFAULT = @{
-        "SETTINGS_FILE_VERSION" = "1";
+        "SETTINGS_FILE_VERSION" = $SETTINGS_FILE_VERSION;
         "INSTALL_DIR" = "C:\oBIT";
         "SYSTEM_JAVA" = "N";
         "FINAL_JRE_PATH" = "C:\Program Files\Java\jre7";
@@ -274,7 +274,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
 
     # Add "AnnotationTool_Properties element
     [System.XML.XMLElement] $root = $doc.CreateElement("AnnotationTool_Properties")
-    $root.SetAttribute("version", "6")
+    $root.SetAttribute("version", $AT_SETTINGS_FILE_VERSION)
     $doc.appendChild($root) | Out-Null
 
     # Add a "server" element
