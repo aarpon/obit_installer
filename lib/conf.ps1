@@ -320,6 +320,7 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
     $stream.WriteLine("Host $dssHost");
     $stream.WriteLine("    HostName $dssHost");
     $stream.WriteLine("    User $dssUser");
+    $stream.WriteLine("    StrictHostKeyChecking no");
     $stream.WriteLine("    IdentityFile $privateKeyFileNamePosix");
 
     # Close stream
