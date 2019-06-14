@@ -26,28 +26,28 @@ $DATAMOVER_FILENAME = "datamover-15.06.0-r34542.zip"
 $DATAMOVER_URL      = "https://wiki-bsse.ethz.ch/download/attachments/21567716/" + $DATAMOVER_FILENAME
 
 # ANNOTATION TOOL
-$OBIT_ANNOTATION_TOOL_VERSION  = "1.1.1"
+$OBIT_ANNOTATION_TOOL_VERSION  = "2.0.0"
 $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL_VERSION + "_" + $PLATFORM_N_BITS + "bit.zip"
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "http://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/"
+$JAVA_BASE_URL = "https://d3pxv6yz143wms.cloudfront.net/8.212.04.2"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "server-jre-8u181-windows-x64.tar.gz"
+    $JAVA_FILENAME = "amazon-corretto-8.212.04.2-windows-x64-jre.zip"
 }
 else
 {
-    $JAVA_FILENAME = "jre-8u181-windows-i586.tar.gz"
+    $JAVA_FILENAME = "amazon-corretto-8.212.04.2-windows-x86-jre.zip"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
 
 # JAVA FALLBACK URL
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/server-jre-8u181-windows-x64.tar.gz"
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/143301256/amazon-corretto-8.212.04.2-windows-x64-jre.zip"
 }
 else
 {
-    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/jre-8u181-windows-i586.tar.gz" 
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/143301256/amazon-corretto-8.212.04.2-windows-x86-jre.zip" 
 }
