@@ -31,23 +31,23 @@ $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "https://d3pxv6yz143wms.cloudfront.net/8.212.04.2"
+$JAVA_BASE_URL = "https://d3pxv6yz143wms.cloudfront.net/8.222.10.1"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "amazon-corretto-8.212.04.2-windows-x64-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8.222.10.3-windows-x64-jre.zip"
 }
 else
 {
-    $JAVA_FILENAME = "amazon-corretto-8.212.04.2-windows-x86-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8.222.10.3-windows-x86-jre.zip"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
 
 # JAVA FALLBACK URL
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/143301256/amazon-corretto-8.212.04.2-windows-x64-jre.zip"
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/amazon-corretto-8.222.10.3-windows-x64-jre.zip"
 }
 else
 {
-    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/143301256/amazon-corretto-8.212.04.2-windows-x86-jre.zip" 
+    $JAVA_URL_FALLBACK = "https://wiki-bsse.ethz.ch/download/attachments/152765137/amazon-corretto-8.222.10.3-windows-x86-jre.zip" 
 }
