@@ -22,7 +22,7 @@ function Set-DefaultOptionValues()
         "SETTINGS_FILE_VERSION" = $SETTINGS_FILE_VERSION;
         "INSTALL_DIR" = "C:\oBIT";
         "SYSTEM_JAVA" = "N";
-        "FINAL_JRE_PATH" = "C:\Program Files\Java\jre7";
+        "FINAL_JRE_PATH" = "C:\Program Files\Java\jre8";
         "USER_FOLDER" = "D:\toOpenBIS";
         "DATAMOVER_DATA_FOLDER" = "D:\Datamover";
         "LOCAL_USER" = "openbis";
@@ -212,14 +212,9 @@ function Configure-Datamover_JSL($datamoverJSLPath, $localUser, $jrePath, $platf
     $stream.WriteLine("[java]")
     $stream.WriteLine("jrepath=$jrePath")
 
-    if ($platformNBits -eq 64)
-    {
-        $stream.WriteLine("jvmtype=server")
-    }
-    else
-    {
-        $stream.WriteLine("jvmtype=client")
-    }
+    # Oracle OpenJDK ships 'server' jvm.dll for 64 bit and 'client' jvm.dll for 32 bit
+    # Amazon Corretto OpenJDK ships 'server' jvm.dll for both architectures.
+    $stream.WriteLine("jvmtype=server")
 
     $stream.WriteLine("wrkdir=$datamoverJSLPath\datamover")
 
