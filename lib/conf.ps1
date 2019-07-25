@@ -107,14 +107,9 @@ function Write-AnnotationToolConfig($annotationToolPath, $jrePath, $platformNBit
         $logFile = ".\log\annotation_tool.log"
     }
 
-    if ($platformNBits -eq 64)
-    {
-        $flavor = "server"
-    }
-    else
-    {
-        $flavor = "client"
-    }
+    # Oracle OpenJDK ships 'server' jvm.dll for 64 bit and 'client' jvm.dll for 32 bit
+    # Amazon Corretto OpenJDK ships 'server' jvm.dll for both architectures.
+    $flavor = "server"
 
     # Open stream
     $stream = [System.IO.StreamWriter] $fileName
