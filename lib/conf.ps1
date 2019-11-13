@@ -181,7 +181,7 @@ function Configure-Datamover($datamoverPath, $datamoverDataIncomingPath, $datamo
 }
 
 # Write the Datamover JSL configuration file
-function Configure-Datamover_JSL($datamoverJSLPath, $localUser, $jrePath, $platformNBits)
+function Configure-Datamover_JSL($datamoverJSLPath, $datamoverServiceName, $localUser, $jrePath, $platformNBits)
 {
 
     # File name
@@ -196,8 +196,8 @@ function Configure-Datamover_JSL($datamoverJSLPath, $localUser, $jrePath, $platf
 
     $stream.WriteLine("[service]")
     $stream.WriteLine("appname = Datamover")
-    $stream.WriteLine("servicename = Datamover")
-    $stream.WriteLine("displayname = Datamover")
+    $stream.WriteLine("servicename = $datamoverServiceName")
+    $stream.WriteLine("displayname = $datamoverServiceName")
     $stream.WriteLine("servicedescription = Datamover as Windows Service")
     $stream.WriteLine("stringbuffer = 16000")
     $stream.WriteLine("starttype=auto")
@@ -256,7 +256,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     {
         $openBISURL = "https://$openBISHost" + ":" + "$openBISPort/openbis"
     }
-    
+
     # Create XML document
     [System.XML.XMLDocument] $doc = New-Object System.XML.XMLDocument
     [System.Xml.XmlDeclaration] $xmlDecl = $doc.CreateXmlDeclaration("1.0", "UTF-8", "no")
@@ -287,7 +287,7 @@ function Write-SSH-Information($sshFolder, $dssHost, $dssUser, $localUser)
 {
     # Write key
     $privateKeyFileName = $sshFolder + "\key"
-    
+
     # Open stream
     $stream = [System.IO.StreamWriter] $privateKeyFileName
 
@@ -360,7 +360,7 @@ function Write-Settings($settingsFileName) {
         }
 
     # Create JSON file
-    $settings | ConvertTo-Json -depth 999 | Out-File $settingsFileName
+    $settings | ConvertTo-Json | Out-File $settingsFileName
 }
 
 # Read settings from JSON file.
@@ -376,7 +376,7 @@ function Read-Settings($settingsFileName) {
 # Write a summary of all settings in human-friendly form
 # Uses global variables
 function Write-SettingsSummary($summaryFileName)
-{   
+{
     # Open stream
     $stream = [System.IO.StreamWriter] $summaryFileName
 
@@ -438,7 +438,7 @@ function Write-SettingsSummary($summaryFileName)
 
 # Write a summary of all settings to Desktop
 # Uses global variables
-function read-SettingsSummary($summaryFileName) {   
+function read-SettingsSummary($summaryFileName) {
 
     # Build regular expression
     $regex = '^(.*)\s*:\s(\w*)$'
