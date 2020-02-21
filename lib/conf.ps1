@@ -122,7 +122,7 @@ function Write-AnnotationToolConfig($annotationToolPath, $jrePath, $platformNBit
     $stream.WriteLine("vmarg.1=-Xms256m")
     $stream.WriteLine("vmarg.2=-Xmx512m")
     $stream.WriteLine("vmarg.3=-XX:MaxPermSize=512m")
-    $stream.WriteLine("log=.\log\annotation_tool.log")
+    $stream.WriteLine("log=$logFile")
     $stream.WriteLine("log.overwrite=true")
     $stream.WriteLine("log.file.and.console=true")
     $stream.WriteLine("log.roll.size=10")
@@ -268,13 +268,19 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     $doc.appendChild($root) | Out-Null
 
     # Add a "server" element
+    #
+    # The configuration name created here will default to "Default"
+    # The setting "CreateMarkerFile" is expected to be very rarely used, and is therefore
+    # set to the deault value of "no".
     [System.XML.XMLElement] $server = $doc.CreateElement("server")
+    $server.SetAttribute("ConfigurationName", "Default")
     $server.SetAttribute("UserDataDir", $userFolder)
     $server.SetAttribute("DatamoverIncomingDir", $datamoverDataIncomingPath)
     $server.SetAttribute("AcquisitionStation", $annotationToolAdminAcqType)
 	$server.SetAttribute("HumanFriendlyHostName", $annotationToolAdminAcqFriendlyName)
     $server.SetAttribute("AcceptSelfSignedCertificates", $acceptSelfSignedCertificates)
     $server.SetAttribute("OpenBISURL", $openBISURL)
+    $server.SetAttribute("CreateMarkerFile", "no")
     $root.AppendChild($server) | Out-Null
 
     # Save file
