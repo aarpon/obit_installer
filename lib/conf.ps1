@@ -9,6 +9,7 @@ function Get-HardwareToDropboxFolderMap()
         "BDINFLUX" = "incoming-influx";
         "BIORADS3E" = "incoming-s3e";
         "BCMOFLOXDP" = "incoming-mofloxdp";
+        "SONY" = "incoming-sony";
     }
 
     return $HARDWAREDROPBOXMAP
