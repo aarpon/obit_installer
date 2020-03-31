@@ -265,7 +265,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     $doc.AppendChild($xmlDecl) | Out-Null
 
     # Add "AnnotationTool_Properties element
-    [System.XML.XMLElement] $root = $doc.CreateElement("AnnotationTool_Properties")
+    [System.XML.XMLElement] $root = $doc.CreateElement("AnnotationTool_App_Settings")
     $root.SetAttribute("version", $AT_SETTINGS_FILE_VERSION)
     $doc.appendChild($root) | Out-Null
 
