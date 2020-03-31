@@ -269,12 +269,12 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     $root.SetAttribute("version", $AT_SETTINGS_FILE_VERSION)
     $doc.appendChild($root) | Out-Null
 
-    # Add a "server" element
+    # Add a "configuration" element
     #
     # The configuration name created here will default to "Default"
     # The setting "CreateMarkerFile" is expected to be very rarely used, and is therefore
     # set to the deault value of "no".
-    [System.XML.XMLElement] $server = $doc.CreateElement("server")
+    [System.XML.XMLElement] $conf = $doc.CreateElement("configuration")
     $server.SetAttribute("ConfigurationName", "Default")
     $server.SetAttribute("UserDataDir", $userFolder)
     $server.SetAttribute("DatamoverIncomingDir", $datamoverDataIncomingPath)
@@ -283,7 +283,7 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     $server.SetAttribute("AcceptSelfSignedCertificates", $acceptSelfSignedCertificates)
     $server.SetAttribute("OpenBISURL", $openBISURL)
     $server.SetAttribute("CreateMarkerFile", "no")
-    $root.AppendChild($server) | Out-Null
+    $root.AppendChild($conf) | Out-Null
 
     # Save file
     $doc.Save($settingsFilePath)
