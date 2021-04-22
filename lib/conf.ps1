@@ -9,6 +9,7 @@ function Get-HardwareToDropboxFolderMap()
         "BDINFLUX" = "incoming-influx";
         "BIORADS3E" = "incoming-s3e";
         "BCMOFLOXDP" = "incoming-mofloxdp";
+        "BCCYTOFLEXS" = "incoming-cytoflexs";
         "SONYSH800S" = "incoming-sonysh800s";
         "SONYMA900" = "incoming-sonyma900";
     }
@@ -275,14 +276,14 @@ function Create-AnnotationTool-Settings($userFolder, $openBISHost, $openBISPort,
     # The setting "CreateMarkerFile" is expected to be very rarely used, and is therefore
     # set to the deault value of "no".
     [System.XML.XMLElement] $conf = $doc.CreateElement("configuration")
-    $server.SetAttribute("ConfigurationName", "Default")
-    $server.SetAttribute("UserDataDir", $userFolder)
-    $server.SetAttribute("DatamoverIncomingDir", $datamoverDataIncomingPath)
-    $server.SetAttribute("AcquisitionStation", $annotationToolAdminAcqType)
-	$server.SetAttribute("HumanFriendlyHostName", $annotationToolAdminAcqFriendlyName)
-    $server.SetAttribute("AcceptSelfSignedCertificates", $acceptSelfSignedCertificates)
-    $server.SetAttribute("OpenBISURL", $openBISURL)
-    $server.SetAttribute("CreateMarkerFile", "no")
+    $conf.SetAttribute("ConfigurationName", "Default")
+    $conf.SetAttribute("UserDataDir", $userFolder)
+    $conf.SetAttribute("DatamoverIncomingDir", $datamoverDataIncomingPath)
+    $conf.SetAttribute("AcquisitionStation", $annotationToolAdminAcqType)
+	$conf.SetAttribute("HumanFriendlyHostName", $annotationToolAdminAcqFriendlyName)
+    $conf.SetAttribute("AcceptSelfSignedCertificates", $acceptSelfSignedCertificates)
+    $conf.SetAttribute("OpenBISURL", $openBISURL)
+    $conf.SetAttribute("CreateMarkerFile", "no")
     $root.AppendChild($conf) | Out-Null
 
     # Save file
