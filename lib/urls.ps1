@@ -26,19 +26,19 @@ $DATAMOVER_FILENAME = "datamover-15.06.0-r34542.zip"
 $DATAMOVER_URL      = "https://wiki-bsse.ethz.ch/download/attachments/21567716/" + $DATAMOVER_FILENAME
 
 # ANNOTATION TOOL
-$OBIT_ANNOTATION_TOOL_VERSION  = "2.2.0"
+$OBIT_ANNOTATION_TOOL_VERSION  = "2.2.1"
 $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL_VERSION + "_" + $PLATFORM_N_BITS + "bit.zip"
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "https://corretto.aws/downloads/resources/8.292.10.1"
+$JAVA_BASE_URL = "https://corretto.aws/downloads/resources/8.322.06.1"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "amazon-corretto-8.292.10.1-windows-x64-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8.322.06.1-windows-x64-jre.zip"
 }
 else
 {
-    $JAVA_FILENAME = "amazon-corretto-8.292.10.1-windows-x86-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8.322.06.1-windows-x86-jre.zip"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
 
