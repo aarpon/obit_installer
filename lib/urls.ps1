@@ -31,14 +31,14 @@ $OBIT_ANNOTATION_TOOL_FILENAME = "obit_annotation_tool_" + $OBIT_ANNOTATION_TOOL
 $OBIT_ANNOTATION_TOOL_URL      = "https://github.com/aarpon/obit_annotation_tool/releases/download/" + $OBIT_ANNOTATION_TOOL_VERSION + "/" + $OBIT_ANNOTATION_TOOL_FILENAME
 
 # JAVA JRE
-$JAVA_BASE_URL = "https://corretto.aws/downloads/resources/8.322.06.1"
+$JAVA_BASE_URL = "https://corretto.aws/downloads/latest"
 if ($PLATFORM_N_BITS -eq 64)
 {
-    $JAVA_FILENAME = "amazon-corretto-8.322.06.1-windows-x64-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8-x64-windows-jre.zip"
 }
 else
 {
-    $JAVA_FILENAME = "amazon-corretto-8.322.06.1-windows-x86-jre.zip"
+    $JAVA_FILENAME = "amazon-corretto-8-x86-windows-jre.zip"
 }
 $JAVA_URL = $JAVA_BASE_URL + "/" + $JAVA_FILENAME
 
